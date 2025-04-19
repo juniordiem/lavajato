@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Veículos{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Controle de Veículos</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Registrar Entrada de Veículo</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('entrada_veiculo') }}">
+                    <div class="mb-3">
+                        <label for="nome_cliente" class="form-label">Nome do Cliente</label>
+                        <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contato" class="form-label">Contato</label>
+                        <input type="text" class="form-control" id="contato" name="contato">
+                    </div>
+                    <div class="mb-3">
+                        <label for="placa" class="form-label">Placa</label>
+                        <input type="text" class="form-control" id="placa" name="placa" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="marca" class="form-label">Marca</label>
+                        <input type="text" class="form-control" id="marca" name="marca">
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelo" class="form-label">Modelo</label>
+                        <input type="text" class="form-control" id="modelo" name="modelo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipo_servico" class="form-label">Tipo de Serviço</label>
+                        <select class="form-select" id="tipo_servico" name="tipo_servico" required>
+                            <option value="">Selecione...</option>
+                            {% for servico in servicos %}
+                            <option value="{{ servico['id'] }}">{{ servico['tipo'] }} (R$ {{ "%.2f"|format(servico['valor']) }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar Entrada</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5>Veículos em Andamento</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Entrada</th>
+                                <th>Cliente</th>
+                                <th>Contato</th>
+                                <th>Veículo</th>
+                                <th>Placa</th>
+                                <th>Serviço</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for veiculo in veiculos %}
+                            <tr>
+                                <td>{{ veiculo['data_entrada'] }}</td>
+                                <td>{{ veiculo['nome_cliente'] }}</td>
+                                <td>{{ veiculo['contato'] }}</td>
+                                <td>{{ veiculo['marca'] }} {{ veiculo['modelo'] }}</td>
+                                <td>{{ veiculo['placa'] }}</td>
+                                <td>{{ veiculo['servico_tipo'] }}</td>
+                                <td>R$ {{ "%.2f"|format(veiculo['servico_valor']) }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if veiculo['status'] == 'Em lavagem' %}bg-primary
+                                        {% elif veiculo['status'] == 'Aguardando pagamento' %}bg-warning text-dark
+                                        {% elif veiculo['status'] == 'Finalizado' %}bg-success
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ veiculo['status'] }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if veiculo['status'] != 'Finalizado' %}
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" 
+                                            data-bs-target="#modalSaida{{ veiculo['id'] }}">
+                                        Atualizar Status
+                                    </button>
+                                    
+                                    <!-- Modal para atualizar status -->
+                                    <div class="modal fade" id="modalSaida{{ veiculo['id'] }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Atualizar Status</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <form method="POST" action="{{ url_for('saida_veiculo', id=veiculo['id']) }}">
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Status</label>
+                                                            <select class="form-select" name="status" required>
+                                                                <option value="Em lavagem" {% if veiculo['status'] == 'Em lavagem' %}selected{% endif %}>Em lavagem</option>
+                                                                <option value="Aguardando pagamento" {% if veiculo['status'] == 'Aguardando pagamento' %}selected{% endif %}>Aguardando pagamento</option>
+                                                                <option value="Finalizado">Finalizado</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3" id="valorPagoContainer{{ veiculo['id'] }}" style="display: none;">
+                                                            <label for="valor_pago{{ veiculo['id'] }}" class="form-label">Valor Pago (R$)</label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="valor_pago{{ veiculo['id'] }}" name="valor_pago" 
+                                                                   value="{{ "%.2f"|format(veiculo['servico_valor']) }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary">Salvar</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Mostrar campo de valor pago quando selecionar "Finalizado"
+document.addEventListener('DOMContentLoaded', function() {
+    {% for veiculo in veiculos %}
+    document.querySelector('select[name="status"]').addEventListener('change', function() {
+        const valorPagoContainer = document.getElementById('valorPagoContainer{{ veiculo["id"] }}');
+        if (this.value === 'Finalizado') {
+            valorPagoContainer.style.display = 'block';
+        } else {
+            valorPagoContainer.style.display = 'none';
+        }
+    });
+    {% endfor %}
+});
+</script>
+{% endblock %}

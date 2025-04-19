@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="display-4">Bem-vindo ao Sistema do Lavajato</h1>
+        <p class="lead">Gerencie seus serviços, veículos e relatórios de forma simples e eficiente</p>
+        
+        <div class="mt-5">
+            <a href="{{ url_for('veiculos') }}" class="btn btn-primary btn-lg mx-2">
+                <i class="bi bi-car-front"></i> Registrar Veículo
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-success btn-lg mx-2">
+                <i class="bi bi-speedometer2"></i> Ver Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

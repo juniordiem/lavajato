@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Serviços{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Cadastro de Serviços</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Adicionar Novo Serviço</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('adicionar_servico') }}">
+                    <div class="mb-3">
+                        <label for="tipo" class="form-label">Tipo de Serviço</label>
+                        <input type="text" class="form-control" id="tipo" name="tipo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="valor" class="form-label">Valor (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="valor" name="valor" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar Serviço</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5>Serviços Cadastrados</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo de Serviço</th>
+                                <th>Valor (R$)</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for servico in servicos %}
+                            <tr>
+                                <td>{{ servico['id'] }}</td>
+                                <td>{{ servico['tipo'] }}</td>
+                                <td>R$ {{ "%.2f"|format(servico['valor']) }}</td>
+                                <td>
+                                    <a href="{{ url_for('remover_servico', id=servico['id']) }}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Tem certeza que deseja remover este serviço?')">
+                                        Remover
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

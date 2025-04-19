@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Dashboard</h2>
+        <p class="text-muted">Resumo das atividades do dia</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Em Andamento</h5>
+                <h2 class="card-text">{{ em_andamento }}</h2>
+                <p class="card-text">veículos sendo lavados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Finalizados Hoje</h5>
+                <h2 class="card-text">{{ finalizados_hoje }}</h2>
+                <p class="card-text">veículos lavados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Faturamento</h5>
+                <h2 class="card-text">R$ {{ "%.2f"|format(faturamento_hoje) }}</h2>
+                <p class="card-text">hoje</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5>Últimos Serviços Finalizados</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Entrada</th>
+                                <th>Saída</th>
+                                <th>Cliente</th>
+                                <th>Veículo</th>
+                                <th>Placa</th>
+                                <th>Serviço</th>
+                                <th>Valor Pago</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for servico in ultimos_servicos %}
+                            <tr>
+                                <td>{{ servico['data_entrada'] }}</td>
+                                <td>{{ servico['data_saida'] }}</td>
+                                <td>{{ servico['nome_cliente'] }}</td>
+                                <td>{{ servico['marca'] }} {{ servico['modelo'] }}</td>
+                                <td>{{ servico['placa'] }}</td>
+                                <td>{{ servico['servico'] }}</td>
+                                <td>R$ {{ "%.2f"|format(servico['valor_pago']) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

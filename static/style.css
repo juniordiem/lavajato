@@ -1,0 +1,46 @@
+body {
+    background-color: #f8f9fa;
+    padding-bottom: 60px;
+}
+
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.badge {
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Melhorias para formulários */
+.form-label {
+    font-weight: 500;
+}
+
+/* Ajustes para modais */
+.modal-content {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 15px;
+    }
+}

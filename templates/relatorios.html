@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Relatórios{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Relatórios</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filtrar Relatório</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('relatorios') }}">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="data_inicio" class="form-label">Data Início</label>
+                            <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ data_inicio }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label for="data_fim" class="form-label">Data Fim</label>
+                            <input type="date" class="form-control" id="data_fim" name="data_fim" value="{{ data_fim }}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Histórico de Serviços</h5>
+                <div class="bg-success text-white p-2 rounded">
+                    Total: R$ {{ "%.2f"|format(total) }}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Entrada</th>
+                                <th>Saída</th>
+                                <th>Cliente</th>
+                                <th>Veículo</th>
+                                <th>Placa</th>
+                                <th>Serviço</th>
+                                <th>Valor Pago</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for registro in registros %}
+                            <tr>
+                                <td>{{ registro['data_entrada'] }}</td>
+                                <td>{{ registro['data_saida'] }}</td>
+                                <td>{{ registro['nome_cliente'] }}</td>
+                                <td>{{ registro['marca'] }} {{ registro['modelo'] }}</td>
+                                <td>{{ registro['placa'] }}</td>
+                                <td>{{ registro['servico_tipo'] }}</td>
+                                <td>R$ {{ "%.2f"|format(registro['valor_pago']) }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if registro['status'] == 'Em lavagem' %}bg-primary
+                                        {% elif registro['status'] == 'Aguardando pagamento' %}bg-warning text-dark
+                                        {% elif registro['status'] == 'Finalizado' %}bg-success
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ registro['status'] }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
